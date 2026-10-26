@@ -1,0 +1,23 @@
+services:
+  - type: web
+    name: phishguard-app
+    env: node
+    plan: free
+    region: oregon
+    buildCommand: npm run build && pip install -r ml/requirements.txt
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: MONGODB_URI
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true
+      - key: COOKIE_SECURE
+        value: true
+      - key: FRONTEND_URL
+        value: https://phishguard-app.onrender.com
+      - key: PYTHON_PATH
+        value: python3

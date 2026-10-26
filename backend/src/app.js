@@ -98,6 +98,21 @@ app.use('/api/analytics', analyticsRoutes);
 app.use('/api/feedback', feedbackRoutes);
 app.use('/api/admin', adminRoutes);
 
+const path = require('path');
+const fs = require('fs');
+
+// Serve production frontend assets if built
+const frontendDistPath = path.resolve(__dirname, '../../../frontend/dist');
+if (fs.existsSync(frontendDistPath)) {
+  app.use(express.static(frontendDistPath));
+  app.get('*', (req, res, next) => {
+    if (req.path.startsWith('/api')) {
+      return next();
+    }
+    res.sendFile(path.join(frontendDistPath, 'index.html'));
+  });
+}
+
 // Centralized error handling
 app.use((req, res, next) => {
   // If no route handled the request yet, proceed to notFoundHandler
