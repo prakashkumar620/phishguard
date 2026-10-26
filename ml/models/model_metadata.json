@@ -1,0 +1,75 @@
+{
+  "modelName": "RandomForestClassifier",
+  "framework": "scikit-learn",
+  "algorithm": "RandomForestClassifier(n_estimators=100, max_depth=12)",
+  "featuresCount": 15,
+  "features": [
+    "url_length",
+    "hostname_length",
+    "path_length",
+    "query_length",
+    "subdomain_count",
+    "is_ip",
+    "is_https",
+    "has_at_symbol",
+    "has_double_slash_path",
+    "hyphen_count_host",
+    "dot_count_url",
+    "is_shortener",
+    "is_high_risk_tld",
+    "hostname_entropy",
+    "keyword_count"
+  ],
+  "featureImportances": {
+    "hostname_length": 0.1641,
+    "hostname_entropy": 0.1525,
+    "is_https": 0.1395,
+    "query_length": 0.1268,
+    "keyword_count": 0.0989,
+    "url_length": 0.0896,
+    "hyphen_count_host": 0.0815,
+    "is_high_risk_tld": 0.0479,
+    "is_ip": 0.0341,
+    "subdomain_count": 0.022,
+    "dot_count_url": 0.0147,
+    "has_at_symbol": 0.0137,
+    "path_length": 0.0118,
+    "has_double_slash_path": 0.0029,
+    "is_shortener": 0.0
+  },
+  "trainingSamples": 480,
+  "testSamples": 120,
+  "evaluationMetrics": {
+    "accuracy": 1.0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1Score": 1.0,
+    "rocAuc": 1.0
+  },
+  "confusionMatrix": {
+    "trueNegative": 60,
+    "falsePositive": 0,
+    "falseNegative": 0,
+    "truePositive": 60
+  },
+  "baselineComparison": {
+    "logisticRegression": {
+      "accuracy": 1.0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1Score": 1.0,
+      "rocAuc": 1.0,
+      "confusionMatrix": [
+        [
+          60,
+          0
+        ],
+        [
+          0,
+          60
+        ]
+      ]
+    }
+  },
+  "trainedAt": "2026-10-25T18:25:00Z"
+}

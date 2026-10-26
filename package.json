@@ -1,0 +1,31 @@
+{
+  "name": "phishguard-detection-system",
+  "version": "1.0.0",
+  "description": "Production-grade Phishing URL Detection System using MERN stack and Machine Learning",
+  "private": true,
+  "workspaces": [
+    "backend",
+    "frontend"
+  ],
+  "scripts": {
+    "backend": "npm --prefix backend run dev",
+    "frontend": "npm --prefix frontend run dev",
+    "dev": "concurrently \"npm --prefix backend run dev\" \"npm --prefix frontend run dev\"",
+    "ml:train": "python ml/src/train.py",
+    "ml:eval": "python ml/src/evaluate.py",
+    "test": "npm --prefix backend test"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  },
+  "keywords": [
+    "phishing-detection",
+    "cybersecurity",
+    "machine-learning",
+    "react",
+    "nodejs",
+    "mongodb"
+  ],
+  "author": "Ayush",
+  "license": "MIT"
+}
