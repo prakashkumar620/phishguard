@@ -13,11 +13,11 @@ export default function Footer() {
               <span className="text-lg font-bold text-white tracking-tight">PhishGuard</span>
             </div>
             <p className="text-xs text-slate-400 leading-relaxed max-w-sm">
-              Advanced Phishing URL Detection & Threat Intelligence Platform combining structural feature extraction, trained machine learning classification, and reputation feeds.
+              URL Phishing and Malicious File Detection System. Built with MERN stack and Machine Learning for semester MongoDB project submission.
             </p>
-            <div className="flex items-center space-x-2 text-xs text-cyan-400">
+            <div className="flex items-center space-x-2 text-xs text-emerald-400">
               <Award className="w-4 h-4" />
-              <span>B.Tech Cyber Security Capstone Project</span>
+              <span>MongoDB Academic Lab Project — Ayush Kumar</span>
             </div>
           </div>
 
@@ -34,22 +34,22 @@ export default function Footer() {
 
           {/* Engine specifications */}
           <div className="space-y-2 md:text-right text-xs">
-            <span className="text-slate-300 font-semibold block">Detection Architecture</span>
+            <span className="text-slate-300 font-semibold block">Technology Stack</span>
             <ul className="space-y-1 text-slate-400">
-              <li>RFC 3986 Lexical & Heuristic Engine</li>
-              <li>Scikit-Learn Random Forest Classifier</li>
-              <li>Google Safe Browsing v4 Verification</li>
-              <li>MongoDB Atlas Threat Caching & Auditing</li>
+              <li>MongoDB Document Store & Aggregations</li>
+              <li>Node.js & Express REST Backend</li>
+              <li>React & Tailwind CSS Frontend</li>
+              <li>Python Scikit-Learn ML Classifier</li>
             </ul>
           </div>
         </div>
 
         <div className="mt-8 pt-6 border-t border-slate-800/60 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500">
           <div>
-            © {new Date().getFullYear()} PhishGuard Security. Built for Cyber Security Defense.
+            &copy; {new Date().getFullYear()} PhishGuard &bull; Student Project by Ayush Kumar
           </div>
-          <div className="mt-2 sm:mt-0 font-mono text-[11px] text-cyan-500/80">
-            Node.js • React • MongoDB Atlas • Python ML
+          <div className="mt-2 sm:mt-0 font-mono text-[11px] text-emerald-400/80">
+            MongoDB &bull; Express &bull; React &bull; Node.js
           </div>
         </div>
       </div>

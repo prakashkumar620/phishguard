@@ -1,6 +1,6 @@
 const { predictPhishingLikelihood, computeCalibratedFallback } = require('../src/services/mlService');
 
-describe('Phase 5 Verification: Machine Learning Integration Pipeline', () => {
+describe('Machine Learning Inference Pipeline', () => {
   it('predictPhishingLikelihood should return phishing prediction for high-risk lure', async () => {
     const url = 'http://paypal.verify-account-security-alert.xyz/login.php';
     const features = {

@@ -59,7 +59,7 @@ export default function ThreatHarmDetails({ threatProfile }) {
               'bg-amber-950/80 border border-amber-600/70 text-amber-400'
             }`}>
               <AlertOctagon className="w-3.5 h-3.5" />
-              <span>{severity.toUpperCase()} THREAT VECTOR</span>
+              <span>{severity.toUpperCase()} THREAT DETECTED</span>
             </span>
 
             <span className="inline-flex items-center space-x-1 px-2.5 py-0.5 rounded-full text-[11px] font-mono bg-slate-800/80 border border-slate-700 text-slate-300">
@@ -96,7 +96,7 @@ export default function ThreatHarmDetails({ threatProfile }) {
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold uppercase tracking-wider text-red-400 flex items-center space-x-1.5">
               <FileWarning className="w-4 h-4 text-red-400" />
-              <span>Identified Malicious File Artifact</span>
+              <span>Detected Malicious File Payload</span>
             </span>
             <span className="text-xs font-mono font-bold px-2 py-0.5 rounded bg-red-900/50 border border-red-700 text-red-200">
               {detectedPayload.extension.toUpperCase()}
@@ -139,7 +139,7 @@ export default function ThreatHarmDetails({ threatProfile }) {
         <div className="flex items-center space-x-2">
           <Bug className="w-4 h-4 text-rose-400" />
           <h4 className="text-xs font-bold uppercase tracking-wider text-slate-300">
-            Harm Assessment & Victim Endpoint Impact
+            Potential System Harm & Threat Impact
           </h4>
         </div>
 
@@ -241,7 +241,7 @@ export default function ThreatHarmDetails({ threatProfile }) {
           >
             <div className="flex items-center space-x-2">
               <Shield className="w-4 h-4 text-emerald-400" />
-              <span>SOC Containment & Incident Response Steps ({remediationSteps.length} Actions)</span>
+              <span>Recommended Safety & Response Steps ({remediationSteps.length} Actions)</span>
             </div>
             {expandedSteps ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
           </button>

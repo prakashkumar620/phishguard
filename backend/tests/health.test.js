@@ -1,7 +1,7 @@
 const request = require('supertest');
 const app = require('../src/app');
 
-describe('Phase 1 Verification: Backend Health Check & Core Config', () => {
+describe('Health Check & Server Status API', () => {
   it('GET / should return PhishGuard welcome message', async () => {
     const res = await request(app).get('/');
     expect(res.statusCode).toBe(200);

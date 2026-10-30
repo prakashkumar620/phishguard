@@ -1,10 +1,11 @@
-# PhishGuard: Phishing URL Detection & Threat Analysis System
-**B.Tech Cyber Security Capstone Project & Portfolio**
+# PhishGuard: Phishing URL & Malware Detection System
+**Academic Lab Project for MongoDB / Database Management Systems (DBMS)**  
+**Developer:** Ayush Kumar &bull; **Stack:** MERN (MongoDB, Express, React, Node.js) + Python Machine Learning
 
 [![Node.js](https://img.shields.io/badge/Node.js-v24.11-green.svg)](https://nodejs.org/)
 [![React](https://img.shields.io/badge/React-18-blue.svg)](https://react.dev/)
 [![Express](https://img.shields.io/badge/Express-4.21-lightgrey.svg)](https://expressjs.com/)
-[![MongoDB](https://img.shields.io/badge/MongoDB-Atlas-brightgreen.svg)](https://www.mongodb.com/atlas)
+[![MongoDB](https://img.shields.io/badge/MongoDB-Local%20%2F%20Atlas-brightgreen.svg)](https://www.mongodb.com/)
 [![scikit-learn](https://img.shields.io/badge/scikit--learn-1.9-orange.svg)](https://scikit-learn.org/)
 [![Tailwind CSS](https://img.shields.io/badge/TailwindCSS-3.4-38bdf8.svg)](https://tailwindcss.com/)
 
@@ -12,15 +13,71 @@
 
 ## 1. Project Overview
 
-**PhishGuard** is a multi-tier cybersecurity web application engineered to detect, classify, and explain deceptive and malicious URLs. Designed for security analysts and end-users, it bridges the gap between opaque binary machine-learning predictions and static rule engines by providing:
+**PhishGuard** is a full-stack cybersecurity web application built for semester evaluation in the **MongoDB / Database Management Systems** course. It analyzes suspicious links for phishing attempts, fake login portals, and dangerous file download payloads (ransomware droppers, executables, macros, Android APKs).
 
-1. **RFC 3986 Safe Normalization & Feature Extraction:** Safely analyzes URLs without issuing server-side HTTP requests, preventing Server-Side Request Forgery (SSRF) and browser exploitation.
-2. **Deterministic Heuristic Risk Engine:** Evaluates 15+ structural, lexical, and behavioral indicators (Shannon entropy, typo-squatting, raw IP hostnames, @-symbol credential camouflage, brand spoofing, and high-risk TLDs) generating a calibrated risk score (0–100) and severity breakdown.
-3. **Supervised Machine Learning:** A trained `RandomForestClassifier` and baseline `LogisticRegression` pipeline providing non-linear probabilistic classification.
-4. **Threat Intelligence Integration:** Optional Google Safe Browsing API v4 connector featuring SHA-256 indicator privacy and MongoDB TTL auto-expiring cache.
-5. **Auditable Forensics & Role-Based Access Control:** Secure user registration, JWT authentication in httpOnly cookies, rate limiting, and an administrative telemetry dashboard.
+### Key Features
+1. **Multi-Layer Detection Engine:** Combines 15+ heuristic security rules with a trained Scikit-Learn Random Forest ML classifier.
+2. **Deep Payload & Harm Forensics:** Identifies dangerous file extensions (`.iso`, `.exe`, `.docm`, `.apk`, `.scr`, `.bat`), details specific damage to victim computers, and maps techniques to the MITRE ATT&CK framework.
+3. **MongoDB Document Storage:** Stores complete, polymorphic forensic scan reports with subdocuments for indicators and threat profiles.
+4. **Interactive Analytics:** Generates real-time charts using native MongoDB Aggregation Pipelines (`$group`, `$dateToString`, `$unwind`, `$cond`).
 
-> **Cybersecurity Notice:** No detection engine can guarantee 100% safety. Zero-day campaigns and compromised reputable domains can initially evade heuristics. PhishGuard clearly categorizes suspicious signals and model confidences without presenting statistical heuristics as definitive guarantees.
+---
+
+## 2. MongoDB Implementation & Architecture
+
+> This project is designed specifically to showcase MongoDB's NoSQL document model, indexing, and aggregation capabilities:
+
+### A. Why MongoDB (NoSQL) was Chosen Over Relational SQL
+- **Polymorphic Threat Data:** Security scans produce varying numbers of triggered indicators (from 0 to 15+) and different payload metadata (e.g. Windows `.iso` container vs Android `.apk`). In relational SQL, this requires 4-5 tables with expensive foreign-key JOINs. In MongoDB, an entire scan is stored in a single document with zero JOIN overhead.
+- **Embedded Subdocuments:** Threat profiles and indicator arrays are embedded directly inside the `Scan` record, ensuring atomic reads and writes.
+- **Schema Flexibility:** Adding new forensic features (like MITRE ATT&CK techniques or payload details) requires zero schema migrations or table alters.
+
+### B. MongoDB Collections & Schemas
+| Collection | Schema Model | Purpose & Key Features |
+| :--- | :--- | :--- |
+| `scans` | [`Scan.js`](backend/src/models/Scan.js) | Stores scan history, normalized URL, composite risk score, embedded `indicators` array, and nested `threatProfile`. Compound indexes on `{ hostname: 1, scannedAt: -1 }` and `{ userId: 1, scannedAt: -1 }`. |
+| `users` | [`User.js`](backend/src/models/User.js) | Stores user accounts with bcrypt password hashes and roles (`user`, `admin`). Unique index on `email`. |
+| `feedbacks` | [`Feedback.js`](backend/src/models/Feedback.js) | User reports on false positives/negatives, referencing `scans` via Mongoose `ObjectId` (`ref: 'Scan'`). |
+| `threatintelcaches` | [`ThreatIntelCache.js`](backend/src/models/ThreatIntelCache.js) | SHA-256 masked threat intelligence cache featuring a **MongoDB TTL (Time-To-Live) index** for automatic document expiration. |
+
+### C. MongoDB Aggregation Pipelines Used
+The analytics engine in [`analyticsController.js`](backend/src/controllers/analyticsController.js) uses native MongoDB aggregation pipelines:
+```javascript
+// 1. Group by risk category and calculate average score
+await Scan.aggregate([
+  {
+    $group: {
+      _id: '$riskCategory',
+      count: { $sum: 1 },
+      avgScore: { $avg: '$riskScore' }
+    }
+  }
+]);
+
+// 2. Unwind indicator arrays to rank top triggered threats
+await Scan.aggregate([
+  { $unwind: '$indicators' },
+  { $group: { _id: '$indicators.name', count: { $sum: 1 } } },
+  { $sort: { count: -1 } },
+  { $limit: 5 }
+]);
+
+// 3. Temporal 7-day scan trends with conditional counting
+await Scan.aggregate([
+  { $match: { scannedAt: { $gte: sevenDaysAgo } } },
+  {
+    $group: {
+      _id: { $dateToString: { format: '%Y-%m-%d', date: '$scannedAt' } },
+      total: { $sum: 1 },
+      highRisk: { $sum: { $cond: [{ $eq: ['$riskCategory', 'high'] }, 1, 0] } }
+    }
+  }
+]);
+```
+
+### D. MongoDB Indexing Strategy
+- **Compound Index:** `scanSchema.index({ hostname: 1, scannedAt: -1 })` — accelerates domain history and audit queries.
+- **TTL Index:** `threatIntelCacheSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 })` — automatically purges stale threat intelligence cache records without manual cron cleanup.
 
 ---
 

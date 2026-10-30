@@ -1,7 +1,7 @@
 const request = require('supertest');
 const app = require('../src/app');
 
-describe('Phase 3 Verification: MongoDB Scan Schemas & REST Endpoints', () => {
+describe('MongoDB Scan Schemas & History REST Endpoints', () => {
   let createdScanId;
 
   it('POST /api/scans should analyze URL and return 201 with scan assessment', async () => {

@@ -1,7 +1,5 @@
-"""
-Feature extraction pipeline for Phishing URL Detection.
-Extracts 15 deterministic lexical and structural features from URLs.
-"""
+# Feature extraction helper: extracts lexical and structural features from a URL
+
 
 import math
 import re

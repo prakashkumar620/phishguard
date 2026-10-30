@@ -1,7 +1,7 @@
 const request = require('supertest');
 const app = require('../src/app');
 
-describe('Phase 6 Verification: Authentication, Authorization & Admin Controls', () => {
+describe('User Authentication & Admin Authorization', () => {
   let adminToken;
   let userToken;
   const adminEmail = `admin_${Date.now()}@test.org`;

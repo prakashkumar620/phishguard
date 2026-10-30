@@ -1,9 +1,6 @@
-"""
-Model training and evaluation pipeline for Phishing URL Detection.
-Compares Random Forest Classifier vs Logistic Regression with 5-fold cross-validation
-and held-out test evaluation (Precision, Recall, F1, ROC-AUC, Confusion Matrix).
-Saves model artifacts and performance metadata.
-"""
+# Model training and comparison for Phishing URL Detection
+# Compares Random Forest vs Logistic Regression using 5-fold cross validation
+
 
 import csv
 import json

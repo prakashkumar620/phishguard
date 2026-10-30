@@ -33,16 +33,13 @@ export default function ScannerPage() {
     setLoading(true);
 
     try {
-      setScanStep('Validating RFC 3986 format & decoding Punycode IDN...');
+      setScanStep('Checking URL syntax and domain structure...');
       await new Promise(r => setTimeout(r, 200));
 
-      setScanStep('Extracting lexical & structural security features...');
+      setScanStep('Analyzing security indicators and file payloads...');
       await new Promise(r => setTimeout(r, 180));
 
-      setScanStep('Profiling payload file forensics & victim harm assessment...');
-      await new Promise(r => setTimeout(r, 180));
-
-      setScanStep('Evaluating heuristic rules & machine learning inference...');
+      setScanStep('Running ML prediction and saving scan to MongoDB...');
       const response = await api.post('/scans', { url: urlInput.trim() });
 
       if (response.data.success) {
@@ -71,18 +68,18 @@ export default function ScannerPage() {
       <div className="text-center max-w-3xl mx-auto space-y-4">
         <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-cyan-950/60 border border-cyan-800/60 text-cyan-400 text-xs font-semibold">
           <Sparkles className="w-3.5 h-3.5" />
-          <span>Multi-Engine Phishing URL Scanner</span>
+          <span>Phishing URL & Malware Scanner</span>
         </div>
 
         <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-white leading-tight">
           Analyze Any URL for <br className="hidden sm:inline" />
           <span className="bg-gradient-to-r from-cyan-400 via-teal-300 to-blue-500 bg-clip-text text-transparent">
-            Phishing & Deceptive Indicators
+            Phishing & Malware Threats
           </span>
         </h1>
 
         <p className="text-sm sm:text-base text-slate-400 leading-relaxed">
-          Deep lexical inspection, machine learning feature extraction, and threat intelligence checks to classify suspicious links before user compromise.
+          Inspect suspicious links, detect malicious downloads (.exe, .iso, .apk), and view system impact analysis. All scans and threat indicators are stored and indexed in MongoDB.
         </p>
       </div>
 

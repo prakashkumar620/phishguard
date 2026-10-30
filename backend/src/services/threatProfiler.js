@@ -331,7 +331,7 @@ const profileThreat = ({
     'No defensive containment required. Standard web browsing safety hygiene applies.'
   ];
 
-  // SCENARIO 1: Dangerous File Payload Detected (Ransomware, InfoStealer, LotL Script, Macro, APK)
+  // 1. Dangerous file payload detected (.iso, .exe, .docm, .apk, .bat, etc.)
   if (detectedPayload) {
     targetPlatform = detectedPayload.platform;
     severity = 'critical';
@@ -481,7 +481,7 @@ const profileThreat = ({
       ];
     }
   } 
-  // SCENARIO 2: Phishing Credential Harvester / AiTM Phishing Kit (No file download, but deceptive web portal)
+  // 2. Phishing portal or credential harvester lure
   else if (
     features.spoofedBrand ||
     riskScore >= 60 ||
@@ -523,7 +523,7 @@ const profileThreat = ({
       'Upgrade from SMS/App OTP to FIDO2 / WebAuthn Hardware Security Keys (YubiKey) which are immune to AiTM phishing.'
     ];
   }
-  // SCENARIO 3: Suspicious Infrastructure (Raw IP, High Entropy, URL Shortener, Suspicious TLD)
+  // 3. Suspicious infrastructure or cloaked redirector
   else if (riskScore >= 40 || features.isIpAddress || features.isShortener || features.isHighRiskTld) {
     threatCategory = 'Suspicious Infrastructure / Cloaked Redirection Vector';
     severity = 'medium';

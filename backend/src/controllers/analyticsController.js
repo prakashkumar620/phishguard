@@ -1,5 +1,8 @@
 const mongoose = require('mongoose');
 const Scan = require('../models/Scan');
+const User = require('../models/User');
+const Feedback = require('../models/Feedback');
+const ThreatIntelCache = require('../models/ThreatIntelCache');
 const { getConnectionStatus } = require('../config/db');
 const { mockScansStore } = require('./scanController');
 
@@ -167,7 +170,38 @@ const getTrends = async (req, res, next) => {
   }
 };
 
+/**
+ * Get live MongoDB database status and collection document counts
+ */
+const getMongoStats = async (req, res, next) => {
+  try {
+    const isDbReady = getConnectionStatus() && mongoose.connection.readyState === 1;
+    let counts = { scans: 0, users: 0, feedbacks: 0, caches: 0 };
+    if (isDbReady) {
+      counts.scans = await Scan.countDocuments();
+      counts.users = await User.countDocuments();
+      counts.feedbacks = await Feedback.countDocuments();
+      counts.caches = await ThreatIntelCache.countDocuments();
+    } else {
+      counts.scans = mockScansStore.length;
+    }
+
+    res.status(200).json({
+      success: true,
+      data: {
+        connected: isDbReady,
+        databaseName: mongoose.connection.name || 'phishguard',
+        host: mongoose.connection.host || 'localhost',
+        collections: counts
+      }
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
 module.exports = {
   getSummary,
-  getTrends
+  getTrends,
+  getMongoStats
 };

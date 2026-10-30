@@ -1,6 +1,6 @@
 const { checkThreatIntelligence, hashIndicator, memoryIntelCache } = require('../src/services/threatIntelService');
 
-describe('Phase 7 Verification: Threat Intelligence & Caching', () => {
+describe('Threat Intelligence & MongoDB Caching Service', () => {
   it('hashIndicator should produce deterministic SHA-256 hex digest', () => {
     const url = 'https://example.com/login';
     const hash1 = hashIndicator(url);

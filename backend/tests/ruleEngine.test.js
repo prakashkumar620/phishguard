@@ -1,7 +1,7 @@
 const { normalizeUrl } = require('../src/utils/urlNormalizer');
 const { evaluateRules, calculateEntropy } = require('../src/services/ruleEngine');
 
-describe('Phase 2 Verification: URL Normalizer & Rule Engine', () => {
+describe('URL Normalizer & Heuristic Security Rules', () => {
 
   describe('URL Normalizer', () => {
     it('should prepend https:// when protocol is omitted', () => {

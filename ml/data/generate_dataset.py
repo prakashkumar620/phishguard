@@ -1,8 +1,6 @@
-"""
-Dataset generation script for Phishing URL Detection.
-Constructs a balanced, documented, labeled dataset of legitimate and phishing URLs.
-Deduplicates all entries to prevent data leakage between training and testing splits.
-"""
+# Dataset generation script for Phishing URL Detection model
+# Creates a balanced dataset of safe and phishing URLs for training
+
 
 import csv
 import os

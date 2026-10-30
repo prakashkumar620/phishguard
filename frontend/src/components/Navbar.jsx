@@ -1,11 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Shield, History, BarChart3, Lock, User, LogOut, Terminal } from 'lucide-react';
+import { Shield, History, BarChart3, Lock, User, LogOut, Terminal, Database } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import MongoDetailsModal from './MongoDetailsModal';
 
 export default function Navbar() {
   const { user, logout, isAdmin } = useAuth();
   const location = useLocation();
+  const [showMongoModal, setShowMongoModal] = useState(false);
 
   const isActive = (path) => location.pathname === path;
 
@@ -68,6 +70,16 @@ export default function Navbar() {
               <span className="hidden sm:inline">Analytics</span>
             </Link>
 
+            <button
+              type="button"
+              onClick={() => setShowMongoModal(true)}
+              className="flex items-center space-x-1.5 px-3 py-2 rounded-lg text-sm font-medium text-emerald-400 hover:text-emerald-300 hover:bg-emerald-950/40 border border-emerald-800/40 transition"
+              title="View MongoDB Database Schema & Architecture"
+            >
+              <Database className="w-4 h-4 text-emerald-400" />
+              <span>MongoDB</span>
+            </button>
+
             {isAdmin && (
               <Link
                 to="/admin"
@@ -121,6 +133,11 @@ export default function Navbar() {
           </div>
         </div>
       </div>
+
+      <MongoDetailsModal 
+        isOpen={showMongoModal} 
+        onClose={() => setShowMongoModal(false)} 
+      />
     </nav>
   );
 }
