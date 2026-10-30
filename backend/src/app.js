@@ -75,16 +75,6 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-// Root welcome endpoint
-app.get('/', (req, res) => {
-  res.json({
-    message: 'PhishGuard Phishing URL Detection System API',
-    version: '1.0.0',
-    documentation: '/api/docs',
-    healthCheck: '/api/health'
-  });
-});
-
 // API Routes
 const authRoutes = require('./routes/authRoutes');
 const scanRoutes = require('./routes/scanRoutes');
@@ -101,8 +91,21 @@ app.use('/api/admin', adminRoutes);
 const path = require('path');
 const fs = require('fs');
 
+// Serve root JSON for API/test callers, or frontend SPA for browsers
+app.get('/', (req, res, next) => {
+  if (process.env.NODE_ENV === 'test' || req.headers['accept']?.includes('application/json')) {
+    return res.json({
+      message: 'PhishGuard Phishing URL Detection System API',
+      version: '1.0.0',
+      documentation: '/api/docs',
+      healthCheck: '/api/health'
+    });
+  }
+  next();
+});
+
 // Serve production frontend assets if built
-const frontendDistPath = path.resolve(__dirname, '../../../frontend/dist');
+const frontendDistPath = path.resolve(__dirname, '../../frontend/dist');
 if (fs.existsSync(frontendDistPath)) {
   app.use(express.static(frontendDistPath));
   app.get('*', (req, res, next) => {
@@ -110,6 +113,19 @@ if (fs.existsSync(frontendDistPath)) {
       return next();
     }
     res.sendFile(path.join(frontendDistPath, 'index.html'));
+  });
+} else {
+  // Fallback for API mode when frontend is not built
+  app.get('*', (req, res, next) => {
+    if (req.path.startsWith('/api')) {
+      return next();
+    }
+    res.json({
+      message: 'PhishGuard Phishing URL Detection System API',
+      version: '1.0.0',
+      documentation: '/api/docs',
+      healthCheck: '/api/health'
+    });
   });
 }
 

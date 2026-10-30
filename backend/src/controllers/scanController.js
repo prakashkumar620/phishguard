@@ -3,6 +3,7 @@ const Scan = require('../models/Scan');
 const { evaluateRules } = require('../services/ruleEngine');
 const { predictPhishingLikelihood } = require('../services/mlService');
 const { checkThreatIntelligence } = require('../services/threatIntelService');
+const { profileThreat } = require('../services/threatProfiler');
 const { getConnectionStatus } = require('../config/db');
 
 // In-memory fallback cache for scans when DB is disconnected/in mock dev mode
@@ -75,6 +76,16 @@ const createScan = async (req, res, next) => {
     if (compositeScore >= 70) riskCategory = 'high';
     else if (compositeScore >= 40) riskCategory = 'medium';
 
+    const threatProfile = profileThreat({
+      normalizedUrl: evaluation.normalizedUrl,
+      hostname: evaluation.hostname,
+      pathname: evaluation.pathname || '',
+      search: evaluation.search || '',
+      features: evaluation.features,
+      riskScore: compositeScore,
+      indicators
+    });
+
     const scanData = {
       userId: req.user ? req.user._id : null,
       submittedUrl: url.trim(),
@@ -88,6 +99,7 @@ const createScan = async (req, res, next) => {
       modelConfidence,
       threatIntelStatus,
       threatIntelDetails,
+      threatProfile,
       explanation: evaluation.explanation,
       scannedAt: new Date()
     };

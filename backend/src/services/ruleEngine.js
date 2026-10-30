@@ -1,4 +1,5 @@
 const { normalizeUrl, IPV4_REGEX, IPV6_REGEX } = require('../utils/urlNormalizer');
+const { detectFilePayload, profileThreat } = require('./threatProfiler');
 
 // Commonly abused URL shortening services
 const SHORTENING_SERVICES = new Set([
@@ -139,7 +140,8 @@ const extractFeatures = (parsedUrl) => {
     port: port || (isHttps ? '443' : '80'),
     hostnameEntropy,
     urlEntropy,
-    pathDepth
+    pathDepth,
+    detectedPayload: detectFilePayload(pathname, search)
   };
 };
 
@@ -166,6 +168,19 @@ const evaluateRules = (rawUrl) => {
   const features = extractFeatures(parsed);
   const indicators = [];
   let calculatedScore = 0;
+
+  // 0. Dangerous File Payload / Weaponized Dropper Vector
+  if (features.detectedPayload) {
+    const weight = features.detectedPayload.riskWeight || 40;
+    calculatedScore += weight;
+    indicators.push({
+      id: 'DANGEROUS_FILE_PAYLOAD',
+      name: `Dangerous File Payload (${features.detectedPayload.extension.toUpperCase()} - ${features.detectedPayload.type})`,
+      severity: 'critical',
+      weight,
+      description: `Target delivers potentially weaponized file "${features.detectedPayload.fileName}" (${features.detectedPayload.category}). ${features.detectedPayload.description}`
+    });
+  }
 
   // 1. Hostname is a raw IP Address
   if (features.isIpAddress) {
@@ -357,15 +372,28 @@ const evaluateRules = (rawUrl) => {
     explanation = `Low risk estimated (Score: ${finalScore}/100). No critical phishing indicators were identified. Note: An assessment of low risk is not a guarantee of safety. Always verify the source and domain authenticity.`;
   }
 
+  const threatProfile = profileThreat({
+    normalizedUrl: parsed.normalizedUrl,
+    hostname: parsed.hostname,
+    pathname: parsed.pathname,
+    search: parsed.search,
+    features,
+    riskScore: finalScore,
+    indicators
+  });
+
   return {
     success: true,
     normalizedUrl: parsed.normalizedUrl,
     hostname: parsed.hostname,
+    pathname: parsed.pathname,
+    search: parsed.search,
     riskCategory,
     riskScore: finalScore,
     features,
     indicators,
     explanation,
+    threatProfile,
     analyzedAt: new Date().toISOString()
   };
 };

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { 
   Shield, Search, AlertCircle, Sparkles, Terminal, CheckCircle2, 
-  ArrowRight, RefreshCw, Zap, ShieldAlert, Cpu, Lock 
+  ArrowRight, RefreshCw, Zap, ShieldAlert, Cpu, Lock, Skull 
 } from 'lucide-react';
 import api from '../api/client';
 import ScanResultCard from '../components/ScanResultCard';
@@ -15,10 +15,13 @@ export default function ScannerPage() {
 
   const sampleUrls = [
     { label: 'Legitimate Site', url: 'https://www.wikipedia.org/wiki/Computer_security', type: 'safe' },
-    { label: 'Brand Spoofing', url: 'http://paypal.verify-account-security.xyz/login.php', type: 'danger' },
-    { label: 'Raw IP Hostname', url: 'http://192.168.1.1/apple/signin', type: 'danger' },
-    { label: 'URL Shortener', url: 'https://bit.ly/3x8AbC', type: 'warning' },
-    { label: '@-Symbol Bypass', url: 'https://google.com@evil-attacker-site.com/auth', type: 'danger' }
+    { label: 'Ransomware (.iso)', url: 'http://secure-invoice-download.xyz/invoice_2026_payment.iso', type: 'danger' },
+    { label: 'InfoStealer (.exe)', url: 'http://chrome-update-service.top/browser_installer.exe', type: 'danger' },
+    { label: 'Weaponized Doc (.docm)', url: 'http://corporate-bonus-payroll.click/employee_bonus.docm', type: 'danger' },
+    { label: 'Mobile Trojan (.apk)', url: 'http://bank-security-mfa-authenticator.click/banking_update.apk', type: 'danger' },
+    { label: 'Shell Stager (.ps1)', url: 'http://windows-hotfix-deploy.work/security_patch.ps1', type: 'danger' },
+    { label: 'Brand Spoofing', url: 'http://paypal.verify-account-security.xyz/login.php', type: 'warning' },
+    { label: 'URL Shortener', url: 'https://bit.ly/3x8AbC', type: 'warning' }
   ];
 
   const handleScan = async (e) => {
@@ -34,9 +37,12 @@ export default function ScannerPage() {
       await new Promise(r => setTimeout(r, 200));
 
       setScanStep('Extracting lexical & structural security features...');
-      await new Promise(r => setTimeout(r, 200));
+      await new Promise(r => setTimeout(r, 180));
 
-      setScanStep('Evaluating 15+ heuristic detection rules...');
+      setScanStep('Profiling payload file forensics & victim harm assessment...');
+      await new Promise(r => setTimeout(r, 180));
+
+      setScanStep('Evaluating heuristic rules & machine learning inference...');
       const response = await api.post('/scans', { url: urlInput.trim() });
 
       if (response.data.success) {
@@ -184,34 +190,44 @@ export default function ScannerPage() {
       )}
 
       {/* Architecture Highlights */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-6">
-        <div className="p-6 rounded-2xl bg-slate-900/40 border border-slate-800 space-y-2">
-          <div className="w-10 h-10 rounded-xl bg-cyan-950 border border-cyan-800/60 flex items-center justify-center text-cyan-400 mb-3">
-            <Terminal className="w-5 h-5" />
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 pt-6">
+        <div className="p-5 rounded-2xl bg-slate-900/40 border border-slate-800 space-y-2">
+          <div className="w-9 h-9 rounded-xl bg-cyan-950 border border-cyan-800/60 flex items-center justify-center text-cyan-400 mb-2">
+            <Terminal className="w-4 h-4" />
           </div>
-          <h3 className="text-sm font-bold text-white">Rule-Based Heuristics</h3>
+          <h3 className="text-sm font-bold text-white">Rule Heuristics</h3>
           <p className="text-xs text-slate-400 leading-relaxed">
-            Extracts Shannon entropy, URL/host lengths, subdomains, brand patterns, and credential lure keywords.
+            Extracts Shannon entropy, URL/host lengths, subdomains, brand patterns, and credential lures.
           </p>
         </div>
 
-        <div className="p-6 rounded-2xl bg-slate-900/40 border border-slate-800 space-y-2">
-          <div className="w-10 h-10 rounded-xl bg-purple-950 border border-purple-800/60 flex items-center justify-center text-purple-400 mb-3">
-            <Cpu className="w-5 h-5" />
+        <div className="p-5 rounded-2xl bg-slate-900/40 border border-slate-800 space-y-2">
+          <div className="w-9 h-9 rounded-xl bg-purple-950 border border-purple-800/60 flex items-center justify-center text-purple-400 mb-2">
+            <Cpu className="w-4 h-4" />
           </div>
           <h3 className="text-sm font-bold text-white">Machine Learning</h3>
           <p className="text-xs text-slate-400 leading-relaxed">
-            Trained classification models analyze non-linear feature interactions to estimate calibrated phishing probabilities.
+            Random Forest ensemble classifies non-linear lexical feature distributions to estimate phishing probability.
           </p>
         </div>
 
-        <div className="p-6 rounded-2xl bg-slate-900/40 border border-slate-800 space-y-2">
-          <div className="w-10 h-10 rounded-xl bg-blue-950 border border-blue-800/60 flex items-center justify-center text-blue-400 mb-3">
-            <Lock className="w-5 h-5" />
+        <div className="p-5 rounded-2xl bg-slate-900/40 border border-slate-800 space-y-2">
+          <div className="w-9 h-9 rounded-xl bg-blue-950 border border-blue-800/60 flex items-center justify-center text-blue-400 mb-2">
+            <Lock className="w-4 h-4" />
           </div>
-          <h3 className="text-sm font-bold text-white">Threat Intelligence</h3>
+          <h3 className="text-sm font-bold text-white">Threat Intel</h3>
           <p className="text-xs text-slate-400 leading-relaxed">
-            Correlates target indicators against official reputation feeds with SHA-256 caching and TTL auto-expiration.
+            Correlates target hashes against Safe Browsing reputation feeds with SHA-256 caching and TTL expiration.
+          </p>
+        </div>
+
+        <div className="p-5 rounded-2xl bg-slate-900/40 border border-slate-800 space-y-2">
+          <div className="w-9 h-9 rounded-xl bg-red-950 border border-red-800/60 flex items-center justify-center text-red-400 mb-2">
+            <Skull className="w-4 h-4" />
+          </div>
+          <h3 className="text-sm font-bold text-white">Threat Harm & MITRE</h3>
+          <p className="text-xs text-slate-400 leading-relaxed">
+            Detects payload file extensions (.iso, .exe, .docm, .apk), details victim harm, and maps MITRE ATT&CK techniques.
           </p>
         </div>
       </div>

@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import RiskGauge from './RiskGauge';
 import IndicatorList from './IndicatorList';
+import ThreatHarmDetails from './ThreatHarmDetails';
 import api from '../api/client';
 
 export default function ScanResultCard({ scan, onFeedbackSubmitted }) {
@@ -89,6 +90,13 @@ export default function ScanResultCard({ scan, onFeedbackSubmitted }) {
 
         {/* Timestamp & Action Badges */}
         <div className="flex flex-wrap items-center gap-3">
+          {scan.threatProfile?.threatCategory && scan.threatProfile?.hasThreatProfile && (
+            <div className="flex items-center space-x-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg bg-red-950/60 border border-red-800/80 text-red-300">
+              <span className="w-2 h-2 rounded-full bg-red-500 animate-ping" />
+              <span>{scan.threatProfile.threatCategory.split('/')[0]}</span>
+            </div>
+          )}
+
           <div className="flex items-center space-x-1.5 text-xs text-slate-400 font-mono bg-slate-950/60 px-3 py-1.5 rounded-lg border border-slate-800">
             <Clock className="w-3.5 h-3.5 text-slate-500" />
             <span>{new Date(scan.scannedAt).toLocaleString()}</span>
@@ -169,6 +177,13 @@ export default function ScanResultCard({ scan, onFeedbackSubmitted }) {
           <IndicatorList indicators={scan.indicators} />
         </div>
       </div>
+
+      {/* Deep Threat Vector Forensics & Harm Assessment */}
+      {scan.threatProfile && (
+        <div className="mt-6 pt-6 border-t border-slate-800">
+          <ThreatHarmDetails threatProfile={scan.threatProfile} />
+        </div>
+      )}
 
       {/* Footer link to scan detail page */}
       {scan._id && (

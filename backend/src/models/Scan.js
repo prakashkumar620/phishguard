@@ -83,6 +83,10 @@ const scanSchema = new mongoose.Schema(
       type: String,
       default: ''
     },
+    threatProfile: {
+      type: mongoose.Schema.Types.Mixed,
+      default: null
+    },
     scannedAt: {
       type: Date,
       default: Date.now,
