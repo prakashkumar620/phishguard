@@ -86,6 +86,17 @@ const createScan = async (req, res, next) => {
       indicators
     });
 
+    let explanation = evaluation.explanation;
+    if (compositeScore !== evaluation.riskScore) {
+      if (riskCategory === 'high') {
+        explanation = `High risk detected (Composite Score: ${compositeScore}/100). The URL exhibits ${indicators.length} suspicious signals including ${indicators.filter(i => i.severity === 'critical').map(i => i.name).join(', ') || 'anomalous security indicators'}. Exercise extreme caution; this URL possesses strong characteristics of a phishing attempt.`;
+      } else if (riskCategory === 'medium') {
+        explanation = `Medium risk detected (Composite Score: ${compositeScore}/100). The URL triggered ${indicators.length} warning signals (${indicators.map(i => i.name).slice(0, 3).join(', ')}). While not definitively confirmed as malicious, caution is advised before entering credentials.`;
+      } else {
+        explanation = `Low risk estimated (Composite Score: ${compositeScore}/100). No critical phishing indicators were identified. Note: An assessment of low risk is not a guarantee of safety. Always verify the source and domain authenticity.`;
+      }
+    }
+
     const scanData = {
       userId: req.user ? req.user._id : null,
       submittedUrl: url.trim(),
@@ -100,7 +111,7 @@ const createScan = async (req, res, next) => {
       threatIntelStatus,
       threatIntelDetails,
       threatProfile,
-      explanation: evaluation.explanation,
+      explanation,
       scannedAt: new Date()
     };
 

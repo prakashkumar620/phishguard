@@ -82,16 +82,18 @@ const extractFeatures = (parsedUrl) => {
   const isHighRiskTld = HIGH_RISK_TLDS.has(tld);
   const isHttps = protocol === 'https:';
 
-  // Check for brand spoofing in subdomains, host, or path when apex host is unrelated
+  // Check for brand spoofing in subdomains, host, userinfo (@), or path when apex host is unrelated
   let spoofedBrand = null;
   const lowerHost = hostname.toLowerCase();
   const lowerPath = pathname.toLowerCase();
+  const lowerUser = (username || '').toLowerCase();
   
   TARGET_BRANDS.some(brand => {
     const isBrandInHost = lowerHost.includes(brand);
     const isBrandInPath = lowerPath.includes(`/${brand}`) || lowerPath.includes(`${brand}/`);
+    const isBrandInUser = lowerUser.includes(brand) || (rawUrl && rawUrl.toLowerCase().includes(`${brand}.com@`));
 
-    if (isBrandInHost || isBrandInPath) {
+    if (isBrandInHost || isBrandInPath || isBrandInUser) {
       const isOfficialBrandDomain = 
         lowerHost === `${brand}.com` ||
         lowerHost.endsWith(`.${brand}.com`) ||
